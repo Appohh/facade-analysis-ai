@@ -3,16 +3,16 @@ import os
 from PIL import Image
 import io
 
-Define base directory
-base_dir = "./cmp_facade_dataset"
+# Define base directory
+basedir = "./data/cmp_facade_dataset"
 splits = ["train", "test", "eval"]
 
-Create main folders
+# Create main folders
 for folder in ["images", "annotations"]:
     for split in splits:
-        os.makedirs(os.path.join(base_dir, folder, split), exist_ok=True)
+        os.makedirs(os.path.join(basedir, folder, split), exist_ok=True)
 
-Loop through each split and process the dataset
+# Loop through each split and process the dataset
 for split in splits:
     print(f"Processing split: {split}")
     dataset = load_dataset("Xpitfire/cmp_facade", split=split)

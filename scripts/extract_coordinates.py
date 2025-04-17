@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 
 # Base directory
-base_dir = "./cmp_facade_dataset"
+base_dir = "./data/cmp_facade_dataset"
 
 def extract_and_save_coordinates(output_dir):
     # Create output directory structure
@@ -47,5 +47,6 @@ def extract_and_save_coordinates(output_dir):
     print(f"Coordinates extracted and saved to {output_dir}")
 
 if __name__ == "__main__":
-    output_dir = "./annotations_coords"
+    output_dir = os.path.join(base_dir, "annotations_coords1")
+
     extract_and_save_coordinates(output_dir)
