@@ -47,6 +47,6 @@ def extract_and_save_coordinates(output_dir):
     print(f"Coordinates extracted and saved to {output_dir}")
 
 if __name__ == "__main__":
-    output_dir = os.path.join(base_dir, "annotations_coords1")
+    output_dir = os.path.join(base_dir, "annotations_coords")
 
     extract_and_save_coordinates(output_dir)
