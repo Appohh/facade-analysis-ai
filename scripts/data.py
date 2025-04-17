@@ -30,4 +30,4 @@ for split in splits:
         image.save(image_path)
         annotation.save(annotation_path)
 
-print(f"\nAll images and annotations have been downloaded and organized in '{base_dir}'")
+print(f"\nAll images and annotations have been downloaded and organized in '{basedir}'")
