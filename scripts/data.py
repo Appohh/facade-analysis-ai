@@ -23,8 +23,8 @@ for split in splits:
         annotation = Image.open(io.BytesIO(example["label"]["bytes"]))
 
         # Define paths
-        image_path = os.path.join(basedir, "images", split, f"image{idx}.png")
-        annotation_path = os.path.join(basedir, "annotations", split, f"annotation{idx}.png")
+        image_path = os.path.join(basedir, "images", split, f"image_{idx}.png")
+        annotation_path = os.path.join(basedir, "annotations", split, f"annotation_{idx}.png")
 
         # Save files
         image.save(image_path)
