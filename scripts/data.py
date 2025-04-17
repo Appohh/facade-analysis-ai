@@ -3,23 +3,31 @@ import os
 from PIL import Image
 import io
 
-# Load the dataset
-dataset = load_dataset("Xpitfire/cmp_facade", split="eval")
+Define base directory
+base_dir = "./cmp_facade_dataset"
+splits = ["train", "test", "eval"]
 
-# Define a directory to save images and annotations
-save_dir = "./cmp_facade_dataset"
-os.makedirs(save_dir, exist_ok=True)
-os.makedirs(os.path.join(save_dir, "images"), exist_ok=True)
-os.makedirs(os.path.join(save_dir, "annotations"), exist_ok=True)
+Create main folders
+for folder in ["images", "annotations"]:
+    for split in splits:
+        os.makedirs(os.path.join(base_dir, folder, split), exist_ok=True)
 
-# Save each image and annotation
-for idx, example in enumerate(dataset):
-    # Load image and annotation from bytes
-    image = Image.open(io.BytesIO(example["pixel_values"]["bytes"]))
-    annotation = Image.open(io.BytesIO(example["label"]["bytes"]))
-    
-    # Save as PNG files
-    image.save(os.path.join(save_dir, "images_eval", f"image_{idx}.png"))
-    annotation.save(os.path.join(save_dir, "annotations_eval", f"annotation_{idx}.png"))
+Loop through each split and process the dataset
+for split in splits:
+    print(f"Processing split: {split}")
+    dataset = load_dataset("Xpitfire/cmp_facade", split=split)
 
-print(f"Downloaded and saved {len(dataset)} images and annotations to {save_dir}")
+    for idx, example in enumerate(dataset):
+        # Load image and annotation from bytes
+        image = Image.open(io.BytesIO(example["pixel_values"]["bytes"]))
+        annotation = Image.open(io.BytesIO(example["label"]["bytes"]))
+
+        # Define paths
+        image_path = os.path.join(basedir, "images", split, f"image{idx}.png")
+        annotation_path = os.path.join(basedir, "annotations", split, f"annotation{idx}.png")
+
+        # Save files
+        image.save(image_path)
+        annotation.save(annotation_path)
+
+print(f"\nAll images and annotations have been downloaded and organized in '{base_dir}'")
