@@ -14,3 +14,6 @@ data/
 
 # Ignore environment variable files
 .env
+
+# Ignore virtual environment directories
+.venv/
