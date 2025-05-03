@@ -5,7 +5,7 @@ Project that analyzes facades images with segmentation
 --------------------------------------------------------
 
 # Installing Dependencies
-To be able to run the notebooks and scripts in this repository there are a spefic type of dependencies that need to be installed with spefific versions
+To be able to run the notebooks and scripts in this repository there are a specific type of dependencies that need to be installed with specific versions
 
 The models in this project are trained with GPU Acceleration using Cuda 11.2 with CUDNN v8.1.1.33
 Python 3.10
