@@ -5,9 +5,14 @@ __pycache__/
 # Ignore data directory
 data/
 
-# Ignore model checkpoint files
-*.ckpt
+# Ignore all .pth files...
 *.pth
+# ...NOT the ones in model_archive/
+!model_archive/
+!model_archive/*.pth
+
+# Ignore model checkpoint files (other than .pth handled above)
+*.ckpt
 
 # Ignore Jupyter notebook checkpoints
 .ipynb_checkpoints/
