@@ -7,9 +7,6 @@ data/
 
 # Ignore all .pth files...
 *.pth
-# ...NOT the ones in model_archive/
-!model_archive/
-!model_archive/*.pth
 
 # Ignore model checkpoint files (other than .pth handled above)
 *.ckpt
