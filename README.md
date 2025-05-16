@@ -17,6 +17,10 @@ Torch 2.7.0+cu118
 # Steps
 In order to install dependencies without version conflicts a few dependencies need to be installed in a order within the environment
 
+## Step 0
+Create a virtual environment with the command: "python -m venv venv" in the terminal at the root directory of the project.
+And activate it. Run: "venv\Scripts\activate" 
+
 ## Step 1
 Install a specific version of PyTorch by index
 Run: "pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118"
