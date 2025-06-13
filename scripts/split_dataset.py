@@ -2,73 +2,65 @@ import os
 import random
 import shutil
 
-# Set seed for reproducibility
-random.seed(42)
+# Set paths
+base_dir = './nelissen_dataset'
+images_dir = os.path.join(base_dir, 'images')
+annotations_dir = os.path.join(base_dir, 'annotations')
 
-# Define your dataset directory
-dataset_dir = './generated_facades'  # Change this to your actual folder path
-
-# Define the split ratios
+# Split ratios
 train_ratio = 0.7
 val_ratio = 0.15
 test_ratio = 0.15
 
-# Collect all image-annotation pairs
-image_files = sorted([f for f in os.listdir(dataset_dir) if f.startswith('facade_') and f.endswith('.png')])
-annotation_files = sorted([f for f in os.listdir(dataset_dir) if f.startswith('mask_') and f.endswith('.png')])
+# Set seed for reproducibility
+random.seed(42)
 
-# Extract the numerical part of the filenames to match images and masks
-pairs = []
-for img in image_files:
-    num = img.split('_')[1].split('.')[0]
-    mask = f'mask_{num}.png'
-    if mask in annotation_files:
-        pairs.append((img, mask, num))
-    else:
-        print(f"Warning: No annotation found for {img}")
+# Get all image filenames
+image_files = sorted([f for f in os.listdir(images_dir) if f.startswith('image_') and f.endswith('.png')])
+annotation_files = sorted([f for f in os.listdir(annotations_dir) if f.startswith('annotation_') and f.endswith('.png')])
 
-# Shuffle the pairs
-random.shuffle(pairs)
+# Extract numeric ID and match pairs
+image_ids = [f.split('_')[1].split('.')[0] for f in image_files]
+annotation_ids = [f.split('_')[1].split('.')[0] for f in annotation_files]
 
-# Compute split sizes
-total_pairs = len(pairs)
-train_size = int(train_ratio * total_pairs)
-val_size = int(val_ratio * total_pairs)
-test_size = total_pairs - train_size - val_size  # Ensure all are used
+# Ensure matching IDs
+matched_ids = sorted(set(image_ids) & set(annotation_ids))
 
-# Split the dataset
-train_pairs = pairs[:train_size]
-val_pairs = pairs[train_size:train_size + val_size]
-test_pairs = pairs[train_size + val_size:]
+print(f"✅ Found {len(matched_ids)} matching image-annotation pairs.")
 
-# Define output folders
-output_folders = [
-    'images/train', 'images/val', 'images/test',
-    'annotations/train', 'annotations/val', 'annotations/test'
-]
+# Shuffle IDs
+random.shuffle(matched_ids)
 
-for folder in output_folders:
-    os.makedirs(os.path.join(dataset_dir, folder), exist_ok=True)
+# Split
+total = len(matched_ids)
+train_split = int(train_ratio * total)
+val_split = int(val_ratio * total)
 
-# Helper function to copy and rename files
-def copy_and_rename(pairs, split):
-    for idx, (img_file, mask_file, num) in enumerate(pairs):
-        # Rename: facade_xxx.png -> image_xxx.png
-        new_img_name = f'image_{num}.png'
-        new_mask_name = f'annotation_{num}.png'
+train_ids = matched_ids[:train_split]
+val_ids = matched_ids[train_split:train_split + val_split]
+test_ids = matched_ids[train_split + val_split:]
+
+splits = {
+    'train': train_ids,
+    'val': val_ids,
+    'test': test_ids
+}
+
+# Create output folders
+for split in splits:
+    os.makedirs(os.path.join(images_dir, split), exist_ok=True)
+    os.makedirs(os.path.join(annotations_dir, split), exist_ok=True)
+
+# Copy files
+for split, ids in splits.items():
+    for id in ids:
+        img_name = f'image_{id}.png'
+        ann_name = f'annotation_{id}.png'
         
-        shutil.copy(
-            os.path.join(dataset_dir, img_file),
-            os.path.join(dataset_dir, f'images/{split}', new_img_name)
-        )
-        shutil.copy(
-            os.path.join(dataset_dir, mask_file),
-            os.path.join(dataset_dir, f'annotations/{split}', new_mask_name)
-        )
+        shutil.copy(os.path.join(images_dir, img_name), os.path.join(images_dir, split, img_name))
+        shutil.copy(os.path.join(annotations_dir, ann_name), os.path.join(annotations_dir, split, ann_name))
 
-# Copy and rename the files
-copy_and_rename(train_pairs, 'train')
-copy_and_rename(val_pairs, 'val')
-copy_and_rename(test_pairs, 'test')
-
-print("Dataset split and renaming complete!")
+print("\n✅ Dataset split complete:")
+print(f" - Train: {len(train_ids)}")
+print(f" - Val:   {len(val_ids)}")
+print(f" - Test:  {len(test_ids)}")
