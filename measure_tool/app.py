@@ -14,28 +14,26 @@ import matplotlib.pyplot as plt
 st.set_page_config(layout="wide")
 
 st.markdown("""
-    <style>
-    /* Make all Streamlit buttons more visible */
-    .stButton>button {
-        background-color: #1976D2 !important;  /* Bright blue */
-        color: white !important;
-        border-radius: 8px !important;
-        border: 2px solid #0D47A1 !important;
-        font-weight: bold !important;
-        margin-top: 16px;
-        margin-bottom: 16px;
+   <style>
+    .logo-container {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        z-index: 100;
     }
-    /* Add spacing below plots */
-    .element-container:has(.stPlotlyChart), .element-container:has(.stAltairChart), .element-container:has(.stImage) {
-        margin-bottom: 32px;
+    .logo-img {
+        height: 60px;
     }
     </style>
+    <div class="logo-container">
+        <img class="logo-img" src="https://nelissenbv.nl/wp-content/uploads/2023/01/cropped-Nelissen-favicon-1.png" alt="Logo">
+    </div>
 """, unsafe_allow_html=True)
 
 # ----------------------
 # Configuration
 # ----------------------
-MODEL_PATH = "./model_archive/DeepLabv3/deeplabv3_phase5.pth"
+MODEL_PATH = "./measure_tool/deeplabv3_phase5.pth"
 WINDOW_CLASS_ID = 3  # Adjust if needed
 RESIZE_SIZE = (512, 512)
 
@@ -63,7 +61,7 @@ def preprocess_image(image_pil):
 # ----------------------
 # UI
 # ----------------------
-st.title("Facade Window Measurement Tool")
+st.title("Facade Window/Door Measurement Tool")
 
 uploaded_file = st.file_uploader("Upload facade image", type=["png", "jpg", "jpeg"])
 
@@ -75,6 +73,9 @@ if uploaded_file:
     # Instructions for reference line
     st.write("Draw a blue line on the image below to mark a feature with a known length (e.g., a 100 cm door or window).")
     st.write("Tip: Ensure the line spans a feature whose real-world size you know.")
+    
+    # Toggle for horizontal line constraint
+    constrain_horizontal = st.checkbox("Constrain to Horizontal Line", value=True)
     
     # Set canvas width to match the displayed image width, adjust height to maintain aspect ratio
     canvas_width = 600
@@ -101,6 +102,9 @@ if uploaded_file:
         if obj["type"] == "line":
             x1, y1 = obj["x1"], obj["y1"]
             x2, y2 = obj["x2"], obj["y2"]
+            # Apply horizontal constraint if enabled
+            if constrain_horizontal:
+                y2 = y1  # Force the line to be horizontal at the starting y-coordinate
             # Calculate pixel distance on the canvas scale
             ref_pixel_distance = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
             if ref_pixel_distance < 10:
